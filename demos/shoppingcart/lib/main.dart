@@ -1,19 +1,27 @@
-import 'package:flutter/material.dart';
-import 'screens/product_list_screen.dart';
+import 'product.dart';
+import 'product_view.dart';
+import 'product_presenter.dart';
 
-void main() {
-  runApp(MyApp());
+class ConsoleProductView implements ProductView {
+  @override
+  void displayProductDetails(Product product) {
+    print('Product Details:');
+    print('ID: ${product.id}');
+    print('Name: ${product.name}');
+    print('Price: \$${product.price}');
+  }
 }
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Shopping Cart Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: ProductListScreen(),
-    );
-  }
+void main() {
+  // Create a product
+  var apple = Product(1, 'Apple', 0.5);
+
+  // Create a view
+  var view = ConsoleProductView();
+
+  // Create a presenter
+  var presenter = ProductPresenter(view);
+
+  // Show product details
+  presenter.showProductDetails(apple);
 }
