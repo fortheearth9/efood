@@ -1,0 +1,554 @@
+当然，根据之前的讨论和调整，以下是整个点菜系统项目中涉及的所有表格的SQL语句：
+
+### 1. -- 创建员工表
+CREATE TABLE Employees (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    EmployeeID VARCHAR(20) NOT NULL UNIQUE,
+    Name VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL,
+    Position VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL,
+    Phone VARCHAR(20) NOT NULL,
+    Address VARCHAR(255) CHARACTER SET utf8mb4,
+    HireDate DATE NOT NULL,
+    WeChat VARCHAR(50),
+    INDEX idx_name (Name),
+    INDEX idx_phone (Phone),
+    INDEX idx_wechat (WeChat)
+) DEFAULT CHARSET=utf8mb4 ENGINE=InnoDB;
+
+-- 创建顾客表
+CREATE TABLE Customers (
+    CustomerID INT AUTO_INCREMENT PRIMARY KEY,
+    CustomerName VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL,
+    Phone VARCHAR(20) NOT NULL,
+    Address VARCHAR(255) CHARACTER SET utf8mb4,
+    MembershipNumber VARCHAR(30) NOT NULL UNIQUE,
+    SignUpDate DATE NOT NULL,
+    WeChat VARCHAR(50),
+    INDEX idx_CustomerName (CustomerName),
+    INDEX idx_Phone (Phone),
+    INDEX idx_MembershipNumber (MembershipNumber),
+    INDEX idx_WeChat (WeChat)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+### 2. 菜品类别表（Categories）
+存储菜品类别信息。
+
+CREATE TABLE Categories (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    CategoryID CHAR(10) NOT NULL UNIQUE,
+    CategoryName VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL,
+    INDEX (CategoryName)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+INSERT INTO Categories (CategoryID, CategoryName) VALUES ('TJXP', '推荐新品');
+INSERT INTO Categories (CategoryID, CategoryName) VALUES ('BDCY', '必点烤鱼');
+INSERT INTO Categories (CategoryID, CategoryName) VALUES ('TAOCAN', '套餐');
+INSERT INTO Categories (CategoryID, CategoryName) VALUES ('KYPC', '烤鱼配菜');
+INSERT INTO Categories (CategoryID, CategoryName) VALUES ('JMRC', '精美热菜');
+INSERT INTO Categories (CategoryID, CategoryName) VALUES ('JMLP', '精美冷盘');
+INSERT INTO Categories (CategoryID, CategoryName) VALUES ('JDRC', '经典热菜');
+INSERT INTO Categories (CategoryID, CategoryName) VALUES ('ZSTG', '主食汤羹');
+INSERT INTO Categories (CategoryID, CategoryName) VALUES ('GF', '盖饭');
+INSERT INTO Categories (CategoryID, CategoryName) VALUES ('BJ', '白酒');
+INSERT INTO Categories (CategoryID, CategoryName) VALUES ('PJ', '啤酒');
+INSERT INTO Categories (CategoryID, CategoryName) VALUES ('YP', '饮品');
+INSERT INTO Categories (CategoryID, CategoryName) VALUES ('MTTGTC', '美团团购套餐');
+INSERT INTO Categories (CategoryID, CategoryName) VALUES ('DYTC', '抖音套餐');
+INSERT INTO Categories (CategoryID, CategoryName) VALUES ('LBTJ', '老板推荐');
+INSERT INTO Categories (CategoryID, CategoryName) VALUES ('QT', '其他');
+
+
+CREATE TABLE Categories (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    CategoryID CHAR(10) NOT NULL,
+    CategoryName VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL,
+    PinYinInitials CHAR(10) NOT NULL UNIQUE,
+    INDEX (CategoryName), -- 为CategoryName创建索引，提高搜索效率
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+### 3. 菜单表（Menu）
+存储菜品信息，使用中文拼音首字母作为菜品ID。
+CREATE TABLE Menu (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    MenuItemID VARCHAR(10) CHARACTER SET utf8mb4 NOT NULL,
+    Name VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL,
+    CategoryID VARCHAR(10) NOT NULL,
+    Price DECIMAL(10, 2) NOT NULL,
+    Description TEXT CHARACTER SET utf8mb4,
+    FOREIGN KEY (CategoryID) REFERENCES Categories(CategoryID)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+INSERT INTO Menu (MenuItemID, Name, CategoryID, Price) VALUES
+('NFCCJ', '农夫炒鸡', 'TJXP', 68.00),
+('KGCD', '苦瓜炒蛋', 'TJXP', 24.00),
+('XZPG', '香炸平菇', 'TJXP', 22.00);
+
+
+
+
+非常抱歉给您带来了困扰，我会重新检查并确保`MenuItemID`是菜品名称拼音首字母的组合。以下是修正后的SQL语句：
+
+```sql
+INSERT INTO Menu (MenuItemID, Name, CategoryID, Price) VALUES
+('CBLPF', '川北凉粉', 'JMLP', 22.00),
+('LBDFS', '凉拌豆腐丝', 'JMLP', 16.00),
+('PKHG', '拍黄瓜', 'JMLP', 16.00),
+('KSJ', '口水鸡', 'JMLP', 38.00),
+('YBTZJ', '盐帮土鸡爪', 'JMLP', 28.00),
+('LCDPP', '凉菜大拼盘', 'JMLP', 18.00),
+('XQFZ', '西芹腐竹', 'JMLP', 18.00),
+('PDTF', '皮蛋豆腐', 'JMLP', 18.00);
+```
+
+修正点如下：
+- 确保了`MenuItemID`是菜品名称拼音的首字母组合。
+- 例如，"川北凉粉"的拼音首字母是"CBLP"，为了确保唯一性和区分度，我添加了"F"来代表"粉"。
+- "凉拌豆腐丝"的拼音首字母是"LBDFS"。
+- "凉菜大拼盘"的拼音首字母是"LCDP"，添加了"P"来代表"盘"。
+
+
+INSERT INTO Menu (MenuItemID, Name, CategoryID, Price) VALUES
+('CBLF', '川北凉粉', 'JMLP', 22.00),
+('LBDFS', '凉拌豆腐丝', 'JMLP', 16.00),
+('PHG', '拍黄瓜', 'JMLP', 16.00),
+('KSJ', '口水鸡', 'JMLP', 38.00),
+('YBTJZ', '盐帮土鸡爪', 'JMLP', 28.00),
+('LBDPP', '凉菜大拼盘', 'JMLP', 18.00),
+('XQFZ', '西芹腐竹', 'JMLP', 18.00),
+('PDDF', '皮蛋豆腐', 'JMLP', 18.00);
+
+
+
+请再次确保`CategoryID`与`Categories`表中的相应记录匹配，并且`MenuItemID`的唯一性，以避免与现有记录冲突。如果`Categories`表中还没有“JMLP”这一类别，您需要先在`Categories`表中添加相应的类别记录。
+
+### 4. 桌台表（Tables）
+存储桌台信息。
+
+```sql
+CREATE TABLE Tables (
+    TableID INT PRIMARY KEY AUTO_INCREMENT,
+    TableName VARCHAR(255) NOT NULL,
+    Status ENUM('available', 'occupied', 'reserved') NOT NULL DEFAULT 'available'
+);
+```
+
+### 5. 下单表（OrderSessions）
+存储每次下单的基本信息，包括桌台号和服务员ID。
+
+```sql
+CREATE TABLE OrderSessions (
+    SessionID INT PRIMARY KEY AUTO_INCREMENT,
+    TableID INT NOT NULL,
+    WaiterID INT NOT NULL,
+    OrderTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    Status ENUM('open', 'closed') NOT NULL DEFAULT 'open',
+    FOREIGN KEY (TableID) REFERENCES Tables(TableID),
+    FOREIGN KEY (WaiterID) REFERENCES Users(UserID)
+);
+```
+
+### 6. 订单明细表（OrderDetails）
+存储每次下单的具体菜品信息。
+
+```sql
+CREATE TABLE OrderDetails (
+    DetailID INT PRIMARY KEY AUTO_INCREMENT,
+    SessionID INT NOT NULL,
+    MenuItemID CHAR(10) NOT NULL,
+    Quantity INT NOT NULL,
+    Price DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (SessionID) REFERENCES OrderSessions(SessionID),
+    FOREIGN KEY (MenuItemID) REFERENCES Menu(MenuItemID)
+);
+```
+
+### 索引优化
+为了提高查询效率，可以为常用的查询字段添加索引。
+
+```sql
+-- 为Menu表的CategoryID添加索引
+CREATE INDEX idx_menu_category ON Menu(CategoryID);
+
+-- 为OrderSessions表的TableID和Status添加索引
+CREATE INDEX idx_order_session ON OrderSessions(TableID, Status);
+
+-- 为OrderDetails表的MenuItemID和SessionID添加索引
+CREATE INDEX idx_order_detail ON OrderDetails(SessionID, MenuItemID);
+```
+
+这些SQL语句提供了一个完整的点菜系统数据库设计，可以根据实际需求进行扩展和优化。
+
+使用内存数据结构来维护点菜信息确实可以提高查询和处理的速度，尤其是在高并发的场景下。内存数据结构可以快速响应查询请求，因为它们不需要经过磁盘I/O操作。以下是如何在内存中维护点菜信息的策略：
+
+### 1. 内存数据结构设计
+为了在内存中维护点菜信息，我们可以设计以下几个关键的数据结构：
+
+- **桌台状态映射**：一个哈希表，键为桌台ID，值为桌台的状态信息，如是否已结账。
+- **桌台菜品映射**：一个哈希表，键为桌台ID，值为该桌台点的所有菜品列表（可以是另一个哈希表或列表，其中包含菜品ID和数量）。
+- **菜品信息映射**：一个哈希表，键为菜品ID，值为菜品的详细信息（如名称、价格等）。
+
+### 2. 数据同步
+由于内存数据结构不持久化，需要定期从数据库同步数据到内存，或者在数据变更时（如点菜、结账等操作）即时更新内存数据结构。
+
+### 3. 内存数据更新策略
+- **点菜操作**：当顾客点菜时，更新`桌台菜品映射`中的相应条目，添加或更新菜品ID和数量。
+- **结账操作**：当桌台结账时，更新`桌台状态映射`中的桌台状态为已结账，并清空该桌台的菜品列表。
+- **查询操作**：直接从`桌台菜品映射`中获取未结账桌台的菜品信息。
+
+### 4. 示例代码（假设使用Python字典作为内存数据结构）
+```python
+# 假设的内存数据结构
+tables_status = {}  # 桌台状态映射
+tables_dishes = {}  # 桌台菜品映射
+dishes_info = {}    # 菜品信息映射
+
+# 点菜操作示例
+def order_dish(table_id, dish_id, quantity):
+    if table_id not in tables_status or tables_status[table_id] == 'open':
+        if table_id not in tables_dishes:
+            tables_dishes[table_id] = {}
+        tables_dishes[table_id][dish_id] = tables_dishes[table_id].get(dish_id, 0) + quantity
+    else:
+        print("Table is already closed.")
+
+# 结账操作示例
+def close_bill(table_id):
+    if table_id in tables_status and tables_status[table_id] == 'open':
+        tables_status[table_id] = 'closed'
+        tables_dishes[table_id].clear()
+
+# 查询未结账桌台的菜品信息
+def get_open_table_dishes():
+    open_tables = {table_id: dishes for table_id, status in tables_status.items() if status == 'open'}
+    for table_id, dishes in open_tables.items():
+        print(f"Table {table_id} has ordered: {dishes}")
+
+# 假设同步数据库数据到内存的函数
+def sync_with_database():
+    # 这里应该包含从数据库同步数据到内存的逻辑
+    pass
+```
+
+### 5. 注意事项
+- 内存数据结构的选择和设计应根据实际应用场景和需求来确定。
+- 需要考虑内存数据的一致性和持久化问题，以防系统故障导致数据丢失。
+- 内存数据结构的更新和维护需要与数据库操作同步，以保证数据的一致性。
+
+通过以上策略，你可以有效地在内存中维护点菜信息，从而提高系统的响应速度和处理效率。
+
+
+设计内存数据一致性和持久化的解决方案需要考虑几个关键方面，包括数据的实时同步、备份、恢复以及在系统故障时的数据保护。以下是一些可能的策略：
+
+### 1. 数据实时同步
+- **写前日志（Write-Ahead Logging, WAL）**：在数据写入内存之前，先将变更记录到日志文件中。这样即使系统崩溃，也可以从日志中恢复数据。
+- **内存数据库**：使用如Redis、Memcached等内存数据库，它们提供了数据的持久化选项，可以将内存中的数据定期或按需写入磁盘。
+
+### 2. 数据备份
+- **定期备份**：定期将内存中的数据备份到一个安全的位置，可以是另一个服务器或云存储服务。
+- **快照**：周期性地对内存数据结构进行快照，并存储到磁盘或其他持久化存储中。
+
+### 3. 数据恢复
+- **从备份恢复**：在系统启动或数据丢失时，从最近的备份中恢复数据到内存。
+- **日志重放**：如果使用了WAL，系统可以从日志文件中重放操作来恢复数据。
+
+### 4. 故障转移和高可用性
+- **主从复制**：使用主从复制机制，主节点负责处理写操作，并将数据变更同步到一个或多个从节点。
+- **集群**：使用集群技术，如Redis Cluster或Cassandra，可以在多个节点之间分布数据，并提供故障转移。
+
+### 5. 一致性保证
+- **事务**：如果使用支持事务的内存数据库，可以确保数据操作的原子性、一致性、隔离性和持久性（ACID属性）。
+- **版本控制**：为数据项维护版本号，确保在数据更新时可以处理并发冲突。
+
+### 6. 内存数据结构的选择
+- **不可变数据结构**：使用不可变数据结构可以简化并发控制，因为它们不在同一内存地址上修改数据。
+- **锁和并发控制**：在多线程环境中，使用适当的锁机制或并发控制算法来防止数据竞争和条件竞争。
+
+### 7. 监控和日志记录
+- **监控**：监控系统的性能和健康状况，以便及时发现问题。
+- **日志记录**：记录所有关键操作和系统事件，以便于问题追踪和调试。
+
+### 示例解决方案
+假设我们使用Redis作为内存数据存储，并希望确保数据的一致性和持久化：
+
+```bash
+# Redis配置示例，开启RDB持久化
+redis.conf:
+  save 60 10000   # 每60秒，如果至少有10000个键被改变，则进行快照保存
+  snapshotting-threads 1 # 使用1个额外的线程来进行快照保存
+
+# 使用Redis事务保证操作的原子性
+MULTI
+SET order:12345:dish1 quantity 2
+SET order:12345:dish2 quantity 1
+EXEC
+
+# 使用Redis主从复制
+SLAVEOF <masterip> <masterport> # 从服务器配置，指向主服务器的IP和端口
+```
+
+### 注意事项
+- 选择解决方案时，需要考虑系统的具体需求、成本和复杂性。
+- 需要定期测试备份和恢复流程，确保在需要时可以有效地恢复数据。
+- 在设计系统时，应该考虑到最坏的情况，确保数据的完整性和可用性。
+
+通过上述策略，可以设计出一个既能够保证内存数据一致性，又能够实现数据持久化的解决方案。
+
+
+在项目中使用第三方服务如MySQL数据库和Redis时，封装发布的一个重要目标是隐藏这些服务的具体实现细节，以保护服务安全并简化架构。以下是一些实现这一目标的策略：
+
+### 1. 使用抽象层
+创建一个抽象层来封装对第三方服务的所有访问。这通常意味着创建一个或多个接口（或抽象类），定义所有必要的操作，然后实现这些接口以与具体的第三方服务进行交互。
+
+**示例：**
+```java
+public interface DatabaseService {
+    void saveOrder(Order order);
+    Order getOrderById(int id);
+    // 其他数据库操作...
+}
+
+public class MySQLDatabaseService implements DatabaseService {
+    // MySQL数据库实现
+}
+
+public class RedisDatabaseService implements DatabaseService {
+    // Redis数据库实现
+}
+```
+
+### 2. 依赖注入
+使用依赖注入（DI）来管理第三方服务的实例化和生命周期。这样，你可以在不修改业务逻辑代码的情况下，替换或修改底层服务。
+
+**示例：**
+```java
+public class OrderService {
+    private DatabaseService databaseService;
+
+    // 构造函数注入
+    public OrderService(DatabaseService databaseService) {
+        this.databaseService = databaseService;
+    }
+
+    public void processOrder(Order order) {
+        // 使用注入的databaseService处理订单
+    }
+}
+```
+
+### 3. 配置管理
+将第三方服务的配置信息（如连接字符串、认证信息等）存储在配置文件或环境变量中，而不是硬编码在代码中。这有助于保护敏感信息，并使配置更改更加灵活。
+
+**示例：**
+```properties
+# application.properties
+database.url=jdbc:mysql://localhost:3306/yourdatabase
+database.user=root
+database.password=secret
+```
+
+### 4. API网关
+使用API网关作为所有外部请求的入口点。API网关可以负责请求路由、负载均衡、认证、监控等，同时隐藏后端服务的具体实现。
+
+### 5. 服务注册与发现
+使用服务注册与发现机制来动态管理服务实例。这样，服务消费者不需要知道服务提供者的具体位置，只需通过服务名来访问。
+
+### 6. 安全措施
+- **访问控制**：确保只有授权的服务和用户才能访问第三方服务。
+- **加密**：使用SSL/TLS等加密协议保护数据传输。
+- **密钥管理**：使用密钥管理系统来安全地存储和管理访问密钥。
+
+### 7. 微服务架构
+如果适用，可以采用微服务架构将应用程序分解为一组小的服务，每个服务都封装了对特定第三方服务的访问。
+
+### 8. 监控与日志
+实施监控和日志记录策略，以便跟踪和审计对第三方服务的访问和使用情况。
+
+### 9. 文档与版本控制
+维护详细的API文档和版本控制，以便开发者了解如何与第三方服务交互，同时保护服务不受未经授权的更改。
+
+通过上述策略，你可以有效地隐藏第三方服务的具体实现，同时提供足够的抽象和灵活性来应对未来的变化和潜在的安全威胁。
+
+
+
+请添加经典热菜JDRC类型的菜品： 藤椒炒仔鸡38，小炒黄牛肉58，酸辣鸡杂42，西红柿牛腩 58，腊味烟笋38，土辣椒炒黑猪肉38，干锅鹿茸菇 42，干锅肥肠58， 椒盐大虾88，水煮牛肉58， 藤椒鱼 88， 传统水煮肉42， 外婆菜炒鸡蛋 26，乡村煎豆腐28，重庆辣子鸡68， 回锅肉 38， 腰果虾仁68， 麻辣香锅 68， 长豆角烧茄子 28， 木须肉26 ，小炒藕丝26，酸辣猪肝38，宫保鸡丁28，干炸小酥肉38，京酱肉丝 32， 麻婆豆腐 18，鱼香肉丝32，糖醋里脊38，湘炒扁豆丝28，干锅土豆片28，干锅有机菜花26，
+
+
+INSERT INTO Menu (MenuItemID, Name, CategoryID, Price) VALUES
+('TJCZJ', '藤椒炒仔鸡', 'JDRC', 38.00),
+('XCHNR', '小炒黄牛肉', 'JDRC', 58.00),
+('SLJZ', '酸辣鸡杂', 'JDRC', 42.00),
+('XHSNR', '西红柿牛腩', 'JDRC', 58.00),
+('LWYS', '腊味烟笋', 'JDRC', 38.00),
+('TLJCHZR', '土辣椒炒黑猪肉', 'JDRC', 38.00),
+('GGLRG', '干锅鹿茸菇', 'JDRC', 42.00),
+('GGFC', '干锅肥肠', 'JDRC', 58.00),
+('JYDX', '椒盐大虾', 'JDRC', 88.00),
+('SZNR', '水煮牛肉', 'JDRC', 58.00),
+('TJY', '藤椒鱼', 'JDRC', 88.00),
+('CTSZR', '传统水煮肉', 'JDRC', 42.00),
+('WNCCJD', '外婆菜炒鸡蛋', 'JDRC', 26.00),
+('XCJDF', '乡村煎豆腐', 'JDRC', 28.00),
+('CQLZJ', '重庆辣子鸡', 'JDRC', 68.00),
+('HGR', '回锅肉', 'JDRC', 38.00),
+('YGXR', '腰果虾仁', 'JDRC', 68.00),
+('MLXG', '麻辣香锅', 'JDRC', 68.00),
+('CDJSQZ', '长豆角烧茄子', 'JDRC', 28.00),
+('MXR', '木须肉', 'JDRC', 28.00),
+('XCOS', '小炒藕丝', 'JDRC', 26.00),
+('SLZG', '酸辣猪肝', 'JDRC', 38.00),
+('GBJD', '宫保鸡丁', 'JDRC', 28.00),
+('GZXSR', '干炸小酥肉', 'JDRC', 38.00),
+('JJRS', '京酱肉丝', 'JDRC', 32.00),
+('MPDF', '麻婆豆腐', 'JDRC', 18.00),
+('YXRS', '鱼香肉丝', 'JDRC', 32.00),
+('TCLJ', '糖醋里脊', 'JDRC', 38.00),
+('XCBDS', '湘炒扁豆丝', 'JDRC', 28.00),
+('GGTDP', '干锅土豆片', 'JDRC', 28.00),
+('GGYJCH', '干锅有机菜花', 'JDRC', 26.00),
+('GGQYDF', '干锅千页豆腐', 'JDRC', 28.00),
+('MESY', '木耳山药', 'JDRC', 28.00),
+('CHC', '炒合菜', 'JDRC', 26.00),
+('XGRP', '香菇肉片', 'JDRC', 36.00),
+('CLTDS', '醋溜土豆丝', 'JDRC', 18.00),
+('XHSCJD', '西红柿鸡蛋', 'JDRC', 22.00),
+('XCZG', '小炒猪肝', 'JDRC', 38.00),
+('XCJZ', '小炒鸡杂', 'JDRC', 42.00),
+('XQRS', '香芹肉丝', 'JDRC', 32.00),
+('JJRS', '尖椒肉丝', 'JDRC', 32.00),
+('JJCJD', '尖椒炒鸡蛋', 'JDRC', 22.00),
+('HSDF', '红烧豆腐', 'JDRC', 18.00),
+('XGYC', '香菇油菜', 'JDRC', 26.00),
+('DSX', '地三鲜', 'JDRC', 26.00),
+('JJDP', '尖椒豆皮', 'JDRC', 26.00),
+('QCYMC', '清炒油麦菜', 'JDRC', 20.00),
+('DCCJD', '大葱炒鸡蛋', 'JDRC', 22.00),
+('CHDB', '葱花蛋饼', 'JDRC', 22.00),
+('KGCR', '苦瓜炒肉', 'JDRC', 26.00);
+
+
+INSERT INTO Menu (MenuItemID, Name, CategoryID, Price) VALUES
+('DHC', '蛋炒饭', 'ZSTG', 15.00),
+('GDT', '疙瘩汤', 'ZSTG', 22.00),
+('JYCF', '酱油炒饭', 'ZSTG', 16.00),
+('QCDFT', '青菜豆腐汤', 'ZSTG', 18.00),
+('CQXM', '重庆小面', 'ZSTG', 15.00),
+('NGB', '南瓜饼', 'ZSTG', 16.00),
+('QTM', '清汤面', 'ZSTG', 15.00),
+('HTZB', '红糖糍粑', 'ZSTG', 18.00),
+('HTBF', '红糖冰粉', 'ZSTG', 8.00),
+('LZTY', '醪糟汤圆', 'ZSTG', 8.00),
+('MF', '米饭', 'ZSTG', 3.00),
+('DPMF', '大盆米饭', 'ZSTG', 10.00),
+('SLT', '酸辣汤', 'ZSTG', 22.00);
+
+
+INSERT INTO Menu (MenuItemID, Name, CategoryID, Price) VALUES
+('GBJDGF', '宫保鸡丁盖饭', 'GF', 18.00),
+('YXRSGF', '鱼香肉丝盖饭', 'GF', 18.00),
+('NJXCRGF', '农家小炒肉盖饭', 'GF', 25.00),
+('MPFGF', '麻婆豆腐盖饭', 'GF', 16.00),
+('XCZGGF', '小炒猪肝盖饭', 'GF', 18.00),
+('XCXGGF', '小炒香干盖饭', 'GF', 16.00),
+('XCJZGF', '小炒鸡杂盖饭', 'GF', 20.00),
+('SSBCGF', '手撕包菜盖饭', 'GF', 16.00),
+('MSRGF', '木须肉盖饭', 'GF', 18.00),
+('SLTDSGF', '酸辣土豆丝盖饭', 'GF', 15.00),
+('XHSJDGF', '西红柿鸡蛋盖饭', 'GF', 16.00),
+('HGRGF', '回锅肉盖饭', 'GF', 25.00),
+('XQRSGF', '香芹肉丝盖饭', 'GF', 20.00),
+('JJRSGF', '尖椒肉丝盖饭', 'GF', 20.00),
+('DSXGF', '地三鲜盖饭', 'GF', 18.00),
+('JJJDGF', '尖椒鸡蛋盖饭', 'GF', 16.00),
+('JJDPGF', '尖椒豆皮盖饭', 'GF', 16.00),
+('HSDFGF', '红烧豆腐盖饭', 'GF', 16.00),
+('RMSDJGF', '肉末酸豆角盖饭', 'GF', 18.00),
+('XGRPGF', '香菇肉片盖饭', 'GF', 20.00),
+('JCJDGF', '韭菜鸡蛋盖饭', 'GF', 16.00),
+('XGYCGF', '香菇油菜盖饭', 'GF', 16.00),
+('SLZGGF', '酸辣猪肝盖饭', 'GF', 18.00),
+('SLJZGF', '酸辣鸡杂盖饭', 'GF', 20.00),
+('CLTDSGF', '醋溜土豆丝盖饭', 'GF', 16.00),
+('WPCCJDGF', '外婆菜炒鸡蛋盖饭', 'GF', 16.00),
+('YZCF', '扬州炒饭', 'GF', 18.00),
+('LZJDGF', '辣子鸡丁盖饭', 'GF', 18.00),
+('KGCRGF', '苦瓜炒肉盖饭', 'GF', 18.00);
+
+INSERT INTO Menu (MenuItemID, Name, CategoryID, Price) VALUES
+('DBNE', '大白牛二', 'BJ', 22.00),
+('XBNE', '小白牛二', 'BJ', 12.00),
+('HXEGTBNCN500', '红星二锅头八年陈酿500ML', 'BJ', 58.00),
+('HXEGTBNCN250', '红星二锅头八年陈酿250ML', 'BJ', 32.00),
+('BJEGTFP', '北京二锅头（方瓶）', 'BJ', 38.00),
+('HX56DXBP', '红星56度（小扁瓶）', 'BJ', 10.00),
+('XLJWZ', '小郎酒歪嘴', 'BJ', 22.00),
+('LJ500', '郎酒500ML', 'BJ', 59.00),
+('BJEGTLP', '北京二锅头蓝瓶', 'BJ', 42.00);
+
+
+INSERT INTO Menu (MenuItemID, Name, CategoryID, Price) VALUES
+('YJU8', '燕京U8', 'PJ', 8.00),
+('YJCS', '燕京纯生', 'PJ', 15.00),
+('YJXP', '燕京鲜啤', 'PJ', 10.00),
+('XHYC', '雪花勇闯', 'PJ', 8.00);
+
+
+
+INSERT INTO Menu (MenuItemID, Name, CategoryID, Price) VALUES
+('BBY', '北冰洋', 'YP', 6.00),
+('DY', '大窑', 'YP', 6.00),
+('WLJ', '王老吉', 'YP', 6.00),
+('DKL', '大可乐', 'YP', 12.00),
+('DXB', '大雪碧', 'YP', 12.00),
+('DGL', '大果粒', 'YP', 15.00),
+('SMT', '酸梅汤', 'YP', 8.00),
+('NFSQ', '农夫山泉', 'YP', 3.00),
+('LMQPS', '蓝莓汽泡水', 'YP', 25.00),
+('CMQPS', '草莓汽泡水', 'YP', 25.00),
+('XXB', '小雪碧', 'YP', 4.00),
+('XKL', '小可乐', 'YP', 4.00),
+('JHC', '菊花茶', 'YP', 25.00),
+('DXMJ', '稻香米浆', 'YP', 25.00),
+('BBYXP', '北冰洋新品', 'YP', 8.00),
+('YGL', '摇果粒', 'YP', 8.00),
+('BHC', '冰红茶', 'YP', 5.00),
+('QMLC', '青梅绿茶', 'YP', 5.00);
+
+
+INSERT INTO Menu (MenuItemID, Name, CategoryID, Price) VALUES
+('DBH', '打包盒', 'QT', 1.00),
+('CWF', '餐位费', 'QT', 1.00),
+('CJYY', '差价1元', 'QT', 1.00),
+('KYJRDBTZ', '烤鱼加热打包套装', 'QT', 10.00);
+
+
+INSERT INTO Menu (MenuItemID, Name, CategoryID, Price) VALUES
+('HYXK', '活鱼现烤', 'MTTC', 128.00),
+('ZXSRC', '尊享四人餐', 'MTTC', 482.00),
+('KYTHDP', '鮰鱼特惠单品', 'MTTC', 128.00),
+('MXW23RC', '毛血旺2-3人餐', 'MTTC', 150.00),
+('NFCJ2RC', '农夫炒鸡2人餐', 'MTTC', 100.00),
+('NWSRC', '牛蛙双人餐', 'MTTC', 174.00),
+('KYRSC', '51烤鱼双人餐', 'MTTC', 200.00);
+
+
+INSERT INTO Menu (MenuItemID, Name, CategoryID, Price) VALUES
+('KYSRC', '烤鱼双人餐', 'DYTC', 209.00),
+('MXW23RTC', '毛血旺2-3人套餐', 'DYTC', 175.00),
+('ZXSRC', '尊享4人餐', 'DYTC', 482.00),
+('KYTHDP', '鮰鱼特惠单品', 'DYTC', 128.00),
+('CJ2RC', '炒鸡2人餐', 'DYTC', 100.00),
+('HXBF', '红糖冰粉', 'DYTC', 8.00),
+('TJCZJ', '藤椒炒仔鸡套餐', 'DYTC', 45.00),
+('TSKY34RC', '特色烤鱼3-4人餐', 'DYTC', 168.00);
+
+
+
+
+
+
+
+
+
+
