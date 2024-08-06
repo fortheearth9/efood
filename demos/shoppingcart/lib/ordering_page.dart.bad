@@ -1,0 +1,158 @@
+import 'package:flutter/material.dart';
+import 'menu_service.dart';
+import 'menu_grid.dart';
+import 'order_summary.dart';
+
+import 'menu_service.dart';
+
+class OrderingPage extends StatefulWidget {
+  @override
+  _OrderingPageState createState() => _OrderingPageState();
+}
+
+class _OrderingPageState extends State<OrderingPage> {
+  // 已选菜品及其数量
+  Map<String, int> selectedDishesQuantities = {};
+
+  // 菜单数据
+  List<Map<String, dynamic>> menu = [];
+
+  // Set to keep track of selected dishes
+  Set<String> selectedDishes = {};
+
+  @override
+  void initState() {
+    super.initState();
+    loadMenu();
+  }
+
+  // Future<void> loadMenu() async {
+  //   try {
+  //     final data = await MenuService.loadMenu();
+  //     setState(() {
+  //       menu = List<Map<String, dynamic>>.from(
+  //           data.map((item) => Map<String, dynamic>.from(item)));
+  //       // Add "All" category
+  //       menu.insert(0, {
+  //         'category': 'All',
+  //         'dishes': menu
+  //             .expand((category) =>
+  //                 List<Map<String, dynamic>>.from(category['dishes']))
+  //             .toList(),
+  //       });
+  //     });
+  //   } catch (e) {
+  //     print('Error loading menu: $e');
+  //   }
+  // }
+
+  Future<void> loadMenu() async {
+    try {
+      final data = await MenuService.loadMenu();
+      setState(() {
+        menu = List<Map<String, dynamic>>.from(data);
+        // Add "All" category
+        menu.insert(0, {
+          'category': 'All',
+          'dishes': menu.expand((category) => category['dishes']).toList(),
+        });
+      });
+    } catch (e) {
+      print('Error loading menu: $e');
+    }
+  }
+
+  void _toggleSelection(String dishName) {
+    setState(() {
+      if (selectedDishes.contains(dishName)) {
+        selectedDishes.remove(dishName);
+      } else {
+        selectedDishes.add(dishName);
+        _increment(dishName);
+      }
+    });
+  }
+
+  void _increment(String dishName) {
+    setState(() {
+      selectedDishesQuantities[dishName] =
+          (selectedDishesQuantities[dishName] ?? 0) + 1;
+    });
+  }
+
+  void _decrement(String dishName) {
+    setState(() {
+      if (selectedDishesQuantities[dishName] != null &&
+          selectedDishesQuantities[dishName]! > 0) {
+        selectedDishesQuantities[dishName] =
+            selectedDishesQuantities[dishName]! - 1;
+        if (selectedDishesQuantities[dishName] == 0) {
+          selectedDishes.remove(dishName);
+        }
+      }
+    });
+  }
+
+  int _getTotalDishes() {
+    return selectedDishesQuantities.values
+        .fold(0, (sum, quantity) => sum + quantity);
+  }
+
+  double _getTotalAmount() {
+    double total = 0.0;
+    selectedDishesQuantities.forEach((dishName, quantity) {
+      var dish = menu
+          .expand((category) => category['dishes'])
+          .firstWhere((dish) => dish['name'] == dishName);
+      total += dish['price'] * quantity;
+    });
+    return total;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: menu.length,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Menu'),
+          bottom: TabBar(
+            isScrollable: true,
+            tabs: menu.map((category) {
+              return Tab(text: category['category']);
+            }).toList(),
+          ),
+        ),
+        body: Row(
+          children: [
+            Expanded(
+              flex: 3,
+              child: TabBarView(
+                children: menu.map((category) {
+                  var dishes = category['dishes'];
+                  return MenuGrid(
+                    dishes: dishes,
+                    selectedDishes: selectedDishes,
+                    selectedDishesQuantities: selectedDishesQuantities,
+                    toggleSelection: _toggleSelection,
+                    increment: _increment,
+                    decrement: _decrement,
+                  );
+                }).toList(),
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: OrderSummary(
+                selectedDishesQuantities: selectedDishesQuantities,
+                menu: menu,
+                getTotalDishes: _getTotalDishes,
+                getTotalAmount: _getTotalAmount,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
