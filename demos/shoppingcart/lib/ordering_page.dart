@@ -69,6 +69,22 @@ class _OrderingPageState extends State<OrderingPage> {
     });
   }
 
+  int _getTotalDishes() {
+    return selectedDishesQuantities.values
+        .fold(0, (sum, quantity) => sum + quantity);
+  }
+
+  double _getTotalAmount() {
+    double total = 0.0;
+    selectedDishesQuantities.forEach((dishName, quantity) {
+      var dish = menu
+          .expand((category) => category['dishes'])
+          .firstWhere((dish) => dish['name'] == dishName);
+      total += dish['price'] * quantity;
+    });
+    return total;
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -83,86 +99,132 @@ class _OrderingPageState extends State<OrderingPage> {
             }).toList(),
           ),
         ),
-        body: TabBarView(
-          children: menu.map((category) {
-            var dishes = category['dishes'];
-            return GridView.builder(
-              padding: EdgeInsets.all(8.0),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 8, // Number of buttons per row
-                crossAxisSpacing: 8.0,
-                mainAxisSpacing: 8.0,
-                childAspectRatio: 1.0, // Make the buttons square
-              ),
-              itemCount: dishes.length,
-              itemBuilder: (context, index) {
-                var dish = dishes[index];
-                var dishName = dish['name'];
-                var isSelected = selectedDishes.contains(dishName);
-                var quantity = selectedDishesQuantities[dishName] ?? 0;
-                return GestureDetector(
-                  onTap: () => _toggleSelection(dishName),
-                  onSecondaryTap: () => _decrement(dishName),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? Colors.blue.withOpacity(0.2)
-                          : Colors.transparent,
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(8.0),
+        body: Row(
+          children: [
+            Expanded(
+              flex: 3,
+              child: TabBarView(
+                children: menu.map((category) {
+                  var dishes = category['dishes'];
+                  return GridView.builder(
+                    padding: EdgeInsets.all(8.0),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 8, // Number of buttons per row
+                      crossAxisSpacing: 8.0,
+                      mainAxisSpacing: 8.0,
+                      childAspectRatio: 1.0, // Make the buttons square
                     ),
-                    child: TextButton(
-                      onPressed: () => _toggleSelection(dishName),
-                      style: TextButton.styleFrom(
-                        backgroundColor: quantity > 0
-                            ? Colors.green.withOpacity(0.2)
-                            : Colors.transparent,
-                      ),
-                      child: Stack(
-                        children: [
-                          Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                    itemCount: dishes.length,
+                    itemBuilder: (context, index) {
+                      var dish = dishes[index];
+                      var dishName = dish['name'];
+                      var isSelected = selectedDishes.contains(dishName);
+                      var quantity = selectedDishesQuantities[dishName] ?? 0;
+                      return GestureDetector(
+                        onTap: () => _toggleSelection(dishName),
+                        onSecondaryTap: () => _decrement(dishName),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? Colors.blue.withOpacity(0.2)
+                                : Colors.transparent,
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: TextButton(
+                            onPressed: () => _toggleSelection(dishName),
+                            style: TextButton.styleFrom(
+                              backgroundColor: quantity > 0
+                                  ? Colors.green.withOpacity(0.2)
+                                  : Colors.transparent,
+                            ),
+                            child: Stack(
                               children: [
-                                Text(
-                                  dishName,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                    fontSize: 16.0, // Bigger font size
+                                Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        dishName,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                          fontSize: 16.0, // Bigger font size
+                                        ),
+                                      ),
+                                      Text(
+                                        '\$${dish['price']}',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 16.0, // Bigger font size
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                Text(
-                                  '\$${dish['price']}',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 16.0, // Bigger font size
+                                Positioned(
+                                  bottom: 8.0,
+                                  right: 8.0,
+                                  child: Text(
+                                    '${quantity.toString()}',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors
+                                          .red, // Red color for the number
+                                      fontSize:
+                                          24.0, // Bigger font size for the number
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                          Positioned(
-                            bottom: 8.0,
-                            right: 8.0,
-                            child: Text(
-                              '${quantity.toString()}',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.red, // Red color for the number
-                                fontSize:
-                                    24.0, // Bigger font size for the number
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      );
+                    },
+                  );
+                }).toList(),
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: Column(
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      setState(() {});
+                    },
+                    child: Text('Order Now'),
+                  ),
+                  Expanded(
+                    child: ListView(
+                      children: selectedDishesQuantities.entries.map((entry) {
+                        var dishName = entry.key;
+                        var quantity = entry.value;
+                        var dish = menu
+                            .expand((category) => category['dishes'])
+                            .firstWhere((dish) => dish['name'] == dishName);
+                        return ListTile(
+                          title: Text('$dishName x $quantity'),
+                          subtitle: Text('\$${dish['price'] * quantity}'),
+                        );
+                      }).toList(),
                     ),
                   ),
-                );
-              },
-            );
-          }).toList(),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Text('Total Dishes: ${_getTotalDishes()}'),
+                        Text(
+                            'Total Amount: \$${_getTotalAmount().toStringAsFixed(2)}'),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
