@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 void main() {
   runApp(MyApp());
@@ -26,42 +28,40 @@ class _OrderingPageState extends State<OrderingPage> {
   // 已选菜品及其数量
   Map<String, int> selectedDishesQuantities = {};
 
-  // 模拟的菜单数据
-  final List<Map<String, dynamic>> menu = [
-    {
-      "category": "前菜",
-      "dishes": [
-        {"name": "蒜蓉面包", "price": 3.99},
-        {"name": "凯撒沙拉", "price": 4.99},
-      ],
-    },
-    {
-      "category": "主菜",
-      "dishes": [
-        {"name": "烤鸡", "price": 12.99},
-        {"name": "牛排", "price": 18.50},
-      ],
-    },
-    {
-      "category": "甜点",
-      "dishes": [
-        {"name": "芝士蛋糕", "price": 5.50},
-        {"name": "巧克力布朗尼", "price": 4.25},
-      ],
-    },
-    {
-      "category": "饮料",
-      "dishes": [
-        {"name": "可口可乐", "price": 2.50},
-        {"name": "柠檬水", "price": 2.75},
-      ],
-    },
-  ];
+  // 菜单数据
+  List<Map<String, dynamic>> menu = [];
+
+  @override
+  void initState() {
+    super.initState();
+    print('initState called');
+    loadMenu().then((_) {
+      print('Menu loaded');
+      print('初始化已选菜品及数量: $selectedDishesQuantities');
+      print('初始化菜单数据: $menu');
+    });
+  }
+
+  Future<void> loadMenu() async {
+    try {
+      final String response = await rootBundle.loadString('assets/menu.json');
+      final data = await json.decode(response);
+      setState(() {
+        menu = List<Map<String, dynamic>>.from(data);
+      });
+      print('Menu data set');
+    } catch (e) {
+      print('Error loading menu: $e');
+    }
+  }
 
   void _updateQuantity(String dishName, int change) {
     setState(() {
       if (selectedDishesQuantities.containsKey(dishName)) {
-        selectedDishesQuantities[dishName] = (selectedDishesQuantities[dishName]! + change).clamp(0, double.infinity).toInt();
+        selectedDishesQuantities[dishName] =
+            (selectedDishesQuantities[dishName]! + change)
+                .clamp(0, double.infinity)
+                .toInt();
       } else {
         selectedDishesQuantities[dishName] = 1; // 初始化数量为1
       }
@@ -74,7 +74,8 @@ class _OrderingPageState extends State<OrderingPage> {
   void _increment(String dishName) => _updateQuantity(dishName, 1);
 
   void _decrement(String dishName) {
-    if (selectedDishesQuantities[dishName] != null && selectedDishesQuantities[dishName]! > 1) {
+    if (selectedDishesQuantities[dishName] != null &&
+        selectedDishesQuantities[dishName]! > 1) {
       _updateQuantity(dishName, -1);
     }
   }
@@ -113,6 +114,7 @@ class _OrderingPageState extends State<OrderingPage> {
               itemBuilder: (context, index) {
                 var category = menu[index]['category'];
                 var dishes = menu[index]['dishes'];
+
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -136,7 +138,8 @@ class _OrderingPageState extends State<OrderingPage> {
                               onPressed: () => _decrement(dishName),
                             ),
                             Text(
-                              selectedDishesQuantities[dishName]?.toString() ?? '0',
+                              selectedDishesQuantities[dishName]?.toString() ??
+                                  '0',
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                             IconButton(
