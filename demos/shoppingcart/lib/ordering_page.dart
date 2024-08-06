@@ -39,6 +39,7 @@ class _OrderingPageState extends State<OrderingPage> {
         selectedDishes.remove(dishName);
       } else {
         selectedDishes.add(dishName);
+        _increment(dishName);
       }
     });
   }
@@ -56,6 +57,9 @@ class _OrderingPageState extends State<OrderingPage> {
           selectedDishesQuantities[dishName]! > 0) {
         selectedDishesQuantities[dishName] =
             selectedDishesQuantities[dishName]! - 1;
+        if (selectedDishesQuantities[dishName] == 0) {
+          selectedDishes.remove(dishName);
+        }
       }
     });
   }
@@ -77,7 +81,14 @@ class _OrderingPageState extends State<OrderingPage> {
         body: TabBarView(
           children: menu.map((category) {
             var dishes = category['dishes'];
-            return ListView.builder(
+            return GridView.builder(
+              padding: EdgeInsets.all(8.0),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 8, // Number of buttons per row
+                crossAxisSpacing: 8.0,
+                mainAxisSpacing: 8.0,
+                childAspectRatio: 1.0, // Make the buttons square
+              ),
               itemCount: dishes.length,
               itemBuilder: (context, index) {
                 var dish = dishes[index];
@@ -85,9 +96,8 @@ class _OrderingPageState extends State<OrderingPage> {
                 var isSelected = selectedDishes.contains(dishName);
                 return GestureDetector(
                   onTap: () => _toggleSelection(dishName),
+                  onSecondaryTap: () => _decrement(dishName),
                   child: Container(
-                    margin: EdgeInsets.all(8.0),
-                    padding: EdgeInsets.all(8.0),
                     decoration: BoxDecoration(
                       color: isSelected
                           ? Colors.blue.withOpacity(0.2)
@@ -95,24 +105,22 @@ class _OrderingPageState extends State<OrderingPage> {
                       border: Border.all(color: Colors.grey),
                       borderRadius: BorderRadius.circular(8.0),
                     ),
-                    child: ListTile(
-                      title: Text(dishName),
-                      subtitle: Text('\$${dish['price']}'),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          IconButton(
-                            icon: Icon(Icons.remove),
-                            onPressed: () => _decrement(dishName),
-                          ),
+                    child: TextButton(
+                      onPressed: () => _toggleSelection(dishName),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
                           Text(
-                            selectedDishesQuantities[dishName]?.toString() ??
-                                '0',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            dishName,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
                           ),
-                          IconButton(
-                            icon: Icon(Icons.add),
-                            onPressed: () => _increment(dishName),
+                          Text('\$${dish['price']}'),
+                          Text(
+                            'Qty: ${selectedDishesQuantities[dishName]?.toString() ?? '0'}',
+                            style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
