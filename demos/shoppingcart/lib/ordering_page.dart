@@ -27,6 +27,11 @@ class _OrderingPageState extends State<OrderingPage> {
       final data = await MenuService.loadMenu();
       setState(() {
         menu = List<Map<String, dynamic>>.from(data);
+        // Add "All" category
+        menu.insert(0, {
+          'category': 'All',
+          'dishes': menu.expand((category) => category['dishes']).toList(),
+        });
       });
     } catch (e) {
       print('Error loading menu: $e');
@@ -94,6 +99,7 @@ class _OrderingPageState extends State<OrderingPage> {
                 var dish = dishes[index];
                 var dishName = dish['name'];
                 var isSelected = selectedDishes.contains(dishName);
+                var quantity = selectedDishesQuantities[dishName] ?? 0;
                 return GestureDetector(
                   onTap: () => _toggleSelection(dishName),
                   onSecondaryTap: () => _decrement(dishName),
@@ -107,20 +113,47 @@ class _OrderingPageState extends State<OrderingPage> {
                     ),
                     child: TextButton(
                       onPressed: () => _toggleSelection(dishName),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      style: TextButton.styleFrom(
+                        backgroundColor: quantity > 0
+                            ? Colors.green.withOpacity(0.2)
+                            : Colors.transparent,
+                      ),
+                      child: Stack(
                         children: [
-                          Text(
-                            dishName,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
+                          Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  dishName,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                    fontSize: 16.0, // Bigger font size
+                                  ),
+                                ),
+                                Text(
+                                  '\$${dish['price']}',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 16.0, // Bigger font size
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          Text('\$${dish['price']}'),
-                          Text(
-                            'Qty: ${selectedDishesQuantities[dishName]?.toString() ?? '0'}',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                          Positioned(
+                            bottom: 8.0,
+                            right: 8.0,
+                            child: Text(
+                              '${quantity.toString()}',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.red, // Red color for the number
+                                fontSize:
+                                    24.0, // Bigger font size for the number
+                              ),
+                            ),
                           ),
                         ],
                       ),
