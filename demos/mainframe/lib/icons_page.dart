@@ -1,56 +1,38 @@
 import 'package:flutter/material.dart';
 
 class IconsPage extends StatelessWidget {
-  final List<IconData> icons = [
-    Icons.home,
-    Icons.business,
-    Icons.school,
-    Icons.access_alarm,
-    Icons.account_balance,
-    Icons.add_shopping_cart,
-    Icons.airplanemode_active,
-    Icons.battery_alert,
-    Icons.beach_access,
-    Icons.cake,
-    Icons.call,
-    Icons.camera,
-    Icons.directions_car,
-    Icons.email,
-    Icons.favorite,
-    Icons.flight,
-    Icons.headset,
-    Icons.lock,
-    Icons.map,
-    Icons.phone,
-    Icons.shopping_cart,
+  IconsPage({Key? key}) : super(key: key);
+
+  final List<IconData> icons = const [
+    Icons.people,
+    Icons.person_outline,
+    Icons.star,
+    Icons.verified,
     Icons.thumb_up,
-    Icons.watch,
+    Icons.thumb_down,
+    Icons.favorite,
+    Icons.favorite_border,
+    Icons.favorite_outline,
+    Icons.favorite_border_outlined,
+    Icons.favorite_border_rounded,
+    Icons.favorite_border_sharp,
+    Icons.home,
   ];
 
   final List<String> iconNames = [
-    'home',
-    'business',
-    'school',
-    'access_alarm',
-    'account_balance',
-    'add_shopping_cart',
-    'airplanemode_active',
-    'battery_alert',
-    'beach_access',
-    'cake',
-    'call',
-    'camera',
-    'directions_car',
-    'email',
-    'favorite',
-    'flight',
-    'headset',
-    'lock',
-    'map',
-    'phone',
-    'shopping_cart',
-    'thumb_up',
-    'watch',
+    'People',
+    'Person Outline',
+    'Star',
+    'Verified',
+    'Thumb Up',
+    'Thumb Down',
+    'Favorite',
+    'Favorite Border',
+    'Favorite Outline',
+    'Favorite Border Outlined',
+    'Favorite Border Rounded',
+    'Favorite Border Sharp',
+    'Home',
   ];
 
   @override
@@ -69,8 +51,8 @@ class IconsPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               IconButton(
-                icon: Icon(icons[index]),
-                onPressed: () {},
+                icon: Icon(icons[index]), // Use Icon widget with IconData
+                onPressed: () {}, // Provide the required onPressed parameter
               ),
               Text(iconNames[index]),
             ],
@@ -80,3 +62,9 @@ class IconsPage extends StatelessWidget {
     );
   }
 }
+
+// void main() {
+//   runApp(MaterialApp(
+//     home: IconsPage(),
+//   ));
+// }
