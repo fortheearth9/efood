@@ -5,10 +5,9 @@ import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'feature_button.dart';
 
-
 void main() {
-  // runApp(demoMenu());
-  runApp(BtnNaviPage());
+  runApp(demoMenu());
+  // runApp(BtnNaviPage());
 }
 
 class demoMenu extends StatelessWidget {
@@ -123,7 +122,8 @@ class _FoodListState extends State<FoodList> {
       itemBuilder: (context, id) {
         return ListTile(
           title: Text('Name: ${data[id]['name']}'),
-          subtitle: Text('Type: ${data[id]['type']}, Price: ${data[id]['price']}'),
+          subtitle:
+              Text('Type: ${data[id]['type']}, Price: ${data[id]['price']}'),
         );
       },
     );
