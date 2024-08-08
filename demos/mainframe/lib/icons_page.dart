@@ -1,87 +1,76 @@
 import 'package:flutter/material.dart';
+import 'new_page.dart'; // Import the new page
 
-class IconsPage extends StatefulWidget {
-  @override
-  _IconsPageState createState() => _IconsPageState();
-}
-
-class _IconsPageState extends State<IconsPage> {
-  List<IconItem> iconItems = [];
-
-  @override
-  void initState() {
-    super.initState();
-    // Initialize the list of IconItem objects in initState
-    iconItems = [
-      IconItem(Icons.people, 'People', () => print('People pressed')),
-      IconItem(Icons.person_outline, 'Person Outline',
-          () => print('Person Outline pressed')),
-      IconItem(Icons.star, 'Star', () => print('Star pressed')),
-      IconItem(Icons.verified, 'Verified', () => print('Verified pressed')),
-      IconItem(Icons.thumb_up, 'Thumb Up', () => print('Thumb Up pressed')),
-      IconItem(
-          Icons.thumb_down, 'Thumb Down', () => print('Thumb Down pressed')),
-      IconItem(Icons.favorite, 'Favorite', () => print('Favorite pressed')),
-      IconItem(Icons.favorite_border, 'Favorite Border',
-          () => print('Favorite Border pressed')),
-      IconItem(Icons.favorite_outline, 'Favorite Outline',
-          () => print('Favorite Outline pressed')),
-      IconItem(Icons.favorite_border_outlined, 'Favorite Border Outlined',
-          () => print('Favorite Border Outlined pressed')),
-      IconItem(Icons.favorite_border_rounded, 'Favorite Border Rounded',
-          () => print('Favorite Border Rounded pressed')),
-      IconItem(Icons.favorite_border_sharp, 'Favorite Border Sharp',
-          () => print('Favorite Border Sharp pressed')),
-      IconItem(Icons.home, 'Home', () => print('Home pressed')),
-    ];
-  }
-
-  void iconFunction1() {
-    print('Icon 1 pressed');
-  }
-
-  void iconFunction2() {
-    print('Icon 2 pressed');
-  }
-
-  void iconFunction3() {
-    print('Icon 3 pressed');
-  }
-
+class IconsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final iconItems = _generateIconItems(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('Icons Page'),
       ),
-      body: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 4,
-        ),
-        itemCount: iconItems.length,
-        itemBuilder: (context, index) {
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              IconButton(
-                icon: Icon(
-                    iconItems[index].iconData), // Use Icon widget with IconData
-                onPressed:
-                    iconItems[index].onPressed, // Call the appropriate function
-              ),
-              Text(iconItems[index].iconName),
-            ],
-          );
-        },
+      body: GridView.count(
+        crossAxisCount: 2,
+        children: iconItems,
       ),
+    );
+  }
+
+  void onPressed(BuildContext context) {
+    print('Icon pressed');
+    // print context
+  }
+
+  void handlePersonOutlinePressed(BuildContext context) {
+    print('Person Outline Icon pressed');
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => NewPage()),
+    );
+  }
+
+  List<IconItem> _generateIconItems(BuildContext context) {
+    return [
+      _createIconItem(Icons.people, 'People', () => onPressed(context)),
+      _createIconItem(
+          Icons.person_outline, 'Person Outline', () => handlePersonOutlinePressed(context)),
+      // _createIconItem(Icons.star, 'Star', () => onPressed(context)),
+      // _createIconItem(Icons.verified, 'Verified', () => onPressed(context)),
+      // _createIconItem(Icons.thumb_up, 'Thumb Up', () => onPressed(context)),
+      // _createIconItem(Icons.thumb_down, 'Thumb Down', () => onPressed(context)),
+      // _createIconItem(Icons.favorite, 'Favorite', () => onPressed(context)),
+      // _createIconItem(Icons.favorite_border, 'Favorite Border', () => onPressed(context)),
+    ];
+  }
+
+  IconItem _createIconItem(
+      IconData iconData, String label, VoidCallback onPressed) {
+    return IconItem(
+      icon: Icon(iconData),
+      label: label,
+      onPressed: onPressed,
     );
   }
 }
 
-class IconItem {
-  final IconData iconData;
-  final String iconName;
-  final void Function() onPressed;
+class IconItem extends StatelessWidget {
+  final Icon icon;
+  final String label;
+  final VoidCallback onPressed;
 
-  IconItem(this.iconData, this.iconName, this.onPressed);
+  IconItem({required this.icon, required this.label, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          icon,
+          Text(label),
+        ],
+      ),
+    );
+  }
 }
