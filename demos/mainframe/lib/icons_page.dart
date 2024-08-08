@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'new_page.dart'; // Import the new page
+import 'new_page.dart'; 
 
 class IconsPage extends StatelessWidget {
   @override
