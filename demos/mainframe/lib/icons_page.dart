@@ -31,26 +31,29 @@ class IconsPage extends StatelessWidget {
     );
   }
 
-  List<IconItem> _generateIconItems(BuildContext context) {
+  List<Widget> _generateIconItems(BuildContext context) {
     return [
-      _createIconItem(Icons.people, 'People', () => onPressed(context)),
-      _createIconItem(
-          Icons.person_outline, 'Person Outline', () => handlePersonOutlinePressed(context)),
-      _createIconItem(Icons.star, 'Star', () => onPressed(context)),
-      _createIconItem(Icons.verified, 'Verified', () => onPressed(context)),
-      _createIconItem(Icons.thumb_up, 'Thumb Up', () => onPressed(context)),
-      _createIconItem(Icons.thumb_down, 'Thumb Down', () => onPressed(context)),
-      _createIconItem(Icons.favorite, 'Favorite', () => onPressed(context)),
-      _createIconItem(Icons.favorite_border, 'Favorite Border', () => onPressed(context)),
+      _createIconItem(Icons.people, 'People', Colors.lightBlueAccent, () => onPressed(context)),
+      _createIconItem(Icons.person_outline, 'Person Outline', Colors.lightGreenAccent, () => handlePersonOutlinePressed(context)),
+      _createIconItem(Icons.star, 'Star', Colors.yellowAccent, () => onPressed(context)),
+      _createIconItem(Icons.verified, 'Verified', Colors.pinkAccent, () => onPressed(context)),
+      _createIconItem(Icons.thumb_up, 'Thumb Up', Colors.cyanAccent, () => onPressed(context)),
+      _createIconItem(Icons.thumb_down, 'Thumb Down', Colors.purpleAccent, () => onPressed(context)),
+      _createIconItem(Icons.favorite, 'Favorite', Colors.orangeAccent, () => onPressed(context)),
+      _createIconItem(Icons.favorite_border, 'Favorite Border', Colors.redAccent, () => onPressed(context)),
     ];
   }
 
-  IconItem _createIconItem(
-      IconData iconData, String label, VoidCallback onPressed) {
-    return IconItem(
-      icon: Icon(iconData),
-      label: label,
-      onPressed: onPressed,
+  Widget _createIconItem(
+      IconData iconData, String label, Color backgroundColor, VoidCallback onPressed) {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: IconItem(
+        icon: Icon(iconData, size: 120.0), // Set the icon size to 120.0 (5 times bigger than the default 24.0)
+        label: label,
+        backgroundColor: backgroundColor,
+        onPressed: onPressed,
+      ),
     );
   }
 }
@@ -58,20 +61,27 @@ class IconsPage extends StatelessWidget {
 class IconItem extends StatelessWidget {
   final Icon icon;
   final String label;
+  final Color backgroundColor;
   final VoidCallback onPressed;
 
-  IconItem({required this.icon, required this.label, required this.onPressed});
+  IconItem({required this.icon, required this.label, required this.backgroundColor, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: onPressed,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          icon,
-          Text(label),
-        ],
+    return Container(
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        border: Border.all(color: Colors.black, width: 1.0),
+      ),
+      child: TextButton(
+        onPressed: onPressed,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            icon,
+            Text(label),
+          ],
+        ),
       ),
     );
   }
