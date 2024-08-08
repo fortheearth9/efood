@@ -6,16 +6,33 @@ class IconsPage extends StatefulWidget {
 }
 
 class _IconsPageState extends State<IconsPage> {
-  List<void Function()> iconFunctions = [];
+  List<IconItem> iconItems = [];
 
   @override
   void initState() {
     super.initState();
-    // Initialize the list of functions in initState
-    iconFunctions = [
-      iconFunction1,
-      iconFunction2,
-      iconFunction3,
+    // Initialize the list of IconItem objects in initState
+    iconItems = [
+      IconItem(Icons.people, 'People', () => print('People pressed')),
+      IconItem(Icons.person_outline, 'Person Outline',
+          () => print('Person Outline pressed')),
+      IconItem(Icons.star, 'Star', () => print('Star pressed')),
+      IconItem(Icons.verified, 'Verified', () => print('Verified pressed')),
+      IconItem(Icons.thumb_up, 'Thumb Up', () => print('Thumb Up pressed')),
+      IconItem(
+          Icons.thumb_down, 'Thumb Down', () => print('Thumb Down pressed')),
+      IconItem(Icons.favorite, 'Favorite', () => print('Favorite pressed')),
+      IconItem(Icons.favorite_border, 'Favorite Border',
+          () => print('Favorite Border pressed')),
+      IconItem(Icons.favorite_outline, 'Favorite Outline',
+          () => print('Favorite Outline pressed')),
+      IconItem(Icons.favorite_border_outlined, 'Favorite Border Outlined',
+          () => print('Favorite Border Outlined pressed')),
+      IconItem(Icons.favorite_border_rounded, 'Favorite Border Rounded',
+          () => print('Favorite Border Rounded pressed')),
+      IconItem(Icons.favorite_border_sharp, 'Favorite Border Sharp',
+          () => print('Favorite Border Sharp pressed')),
+      IconItem(Icons.home, 'Home', () => print('Home pressed')),
     ];
   }
 
@@ -31,38 +48,6 @@ class _IconsPageState extends State<IconsPage> {
     print('Icon 3 pressed');
   }
 
-  final List<IconData> icons = const [
-    Icons.people,
-    Icons.person_outline,
-    Icons.star,
-    Icons.verified,
-    Icons.thumb_up,
-    Icons.thumb_down,
-    Icons.favorite,
-    Icons.favorite_border,
-    Icons.favorite_outline,
-    Icons.favorite_border_outlined,
-    Icons.favorite_border_rounded,
-    Icons.favorite_border_sharp,
-    Icons.home,
-  ];
-
-  final List<String> iconNames = [
-    'People',
-    'Person Outline',
-    'Star',
-    'Verified',
-    'Thumb Up',
-    'Thumb Down',
-    'Favorite',
-    'Favorite Border',
-    'Favorite Outline',
-    'Favorite Border Outlined',
-    'Favorite Border Rounded',
-    'Favorite Border Sharp',
-    'Home',
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,27 +58,30 @@ class _IconsPageState extends State<IconsPage> {
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 4,
         ),
-        itemCount: icons.length,
+        itemCount: iconItems.length,
         itemBuilder: (context, index) {
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               IconButton(
-                icon: Icon(icons[index]), // Use Icon widget with IconData
-                onPressed: () {
-                  // Call the appropriate function by index
-                  if (index >= 0 && index < iconFunctions.length) {
-                    iconFunctions[index]();
-                  } else {
-                    print('Invalid index');
-                  }
-                },
+                icon: Icon(
+                    iconItems[index].iconData), // Use Icon widget with IconData
+                onPressed:
+                    iconItems[index].onPressed, // Call the appropriate function
               ),
-              Text(iconNames[index]),
+              Text(iconItems[index].iconName),
             ],
           );
         },
       ),
     );
   }
+}
+
+class IconItem {
+  final IconData iconData;
+  final String iconName;
+  final void Function() onPressed;
+
+  IconItem(this.iconData, this.iconName, this.onPressed);
 }
