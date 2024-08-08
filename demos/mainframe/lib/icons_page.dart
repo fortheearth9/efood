@@ -1,7 +1,35 @@
 import 'package:flutter/material.dart';
 
-class IconsPage extends StatelessWidget {
-  IconsPage({Key? key}) : super(key: key);
+class IconsPage extends StatefulWidget {
+  @override
+  _IconsPageState createState() => _IconsPageState();
+}
+
+class _IconsPageState extends State<IconsPage> {
+  List<void Function()> iconFunctions = [];
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the list of functions in initState
+    iconFunctions = [
+      iconFunction1,
+      iconFunction2,
+      iconFunction3,
+    ];
+  }
+
+  void iconFunction1() {
+    print('Icon 1 pressed');
+  }
+
+  void iconFunction2() {
+    print('Icon 2 pressed');
+  }
+
+  void iconFunction3() {
+    print('Icon 3 pressed');
+  }
 
   final List<IconData> icons = const [
     Icons.people,
@@ -52,7 +80,14 @@ class IconsPage extends StatelessWidget {
             children: [
               IconButton(
                 icon: Icon(icons[index]), // Use Icon widget with IconData
-                onPressed: () {}, // Provide the required onPressed parameter
+                onPressed: () {
+                  // Call the appropriate function by index
+                  if (index >= 0 && index < iconFunctions.length) {
+                    iconFunctions[index]();
+                  } else {
+                    print('Invalid index');
+                  }
+                },
               ),
               Text(iconNames[index]),
             ],
@@ -62,9 +97,3 @@ class IconsPage extends StatelessWidget {
     );
   }
 }
-
-// void main() {
-//   runApp(MaterialApp(
-//     home: IconsPage(),
-//   ));
-// }
