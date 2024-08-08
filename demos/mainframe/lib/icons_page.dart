@@ -10,15 +10,17 @@ class IconsPage extends StatelessWidget {
         title: Text('Icons Page'),
       ),
       body: GridView.count(
-        crossAxisCount: 2,
+        crossAxisCount: 6, // Show 6 items per line
         children: iconItems,
       ),
     );
   }
 
   void onPressed(BuildContext context) {
-    print('Icon pressed');
-    // print context
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => NewPage()),
+    );
   }
 
   void handlePersonOutlinePressed(BuildContext context) {
@@ -34,12 +36,12 @@ class IconsPage extends StatelessWidget {
       _createIconItem(Icons.people, 'People', () => onPressed(context)),
       _createIconItem(
           Icons.person_outline, 'Person Outline', () => handlePersonOutlinePressed(context)),
-      // _createIconItem(Icons.star, 'Star', () => onPressed(context)),
-      // _createIconItem(Icons.verified, 'Verified', () => onPressed(context)),
-      // _createIconItem(Icons.thumb_up, 'Thumb Up', () => onPressed(context)),
-      // _createIconItem(Icons.thumb_down, 'Thumb Down', () => onPressed(context)),
-      // _createIconItem(Icons.favorite, 'Favorite', () => onPressed(context)),
-      // _createIconItem(Icons.favorite_border, 'Favorite Border', () => onPressed(context)),
+      _createIconItem(Icons.star, 'Star', () => onPressed(context)),
+      _createIconItem(Icons.verified, 'Verified', () => onPressed(context)),
+      _createIconItem(Icons.thumb_up, 'Thumb Up', () => onPressed(context)),
+      _createIconItem(Icons.thumb_down, 'Thumb Down', () => onPressed(context)),
+      _createIconItem(Icons.favorite, 'Favorite', () => onPressed(context)),
+      _createIconItem(Icons.favorite_border, 'Favorite Border', () => onPressed(context)),
     ];
   }
 
@@ -62,8 +64,8 @@ class IconItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onPressed,
+    return TextButton(
+      onPressed: onPressed,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
