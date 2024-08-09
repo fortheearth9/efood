@@ -33,10 +33,10 @@ class IconsPage extends StatelessWidget {
 
   List<Widget> _generateIconItems(BuildContext context) {
     return [
-      _createIconItem(Icons.people, 'People', Colors.lightBlueAccent, () => onPressed(context)),
-      _createIconItem(Icons.person_outline, 'Person Outline', Colors.lightGreenAccent, () => handlePersonOutlinePressed(context)),
-      _createIconItem(Icons.star, 'Star', Colors.yellowAccent, () => onPressed(context)),
-      _createIconItem(Icons.verified, 'Verified', Colors.pinkAccent, () => onPressed(context)),
+      _createIconItem(Icons.people, 'People', Color.fromARGB(192, 147, 237, 2), () => onPressed(context)),
+      _createIconItem(Icons.person_outline, 'Person Outline', Color.fromARGB(255, 227, 242, 223), () => handlePersonOutlinePressed(context)),
+      _createIconItem(Icons.desktop, '桌台', Colors.yellowAccent, () => onPressed(context)),
+      _createIconItem(Icons.crown, 'VIP', Colors.pinkAccent, () => onPressed(context)),
       _createIconItem(Icons.thumb_up, 'Thumb Up', Colors.cyanAccent, () => onPressed(context)),
       _createIconItem(Icons.thumb_down, 'Thumb Down', Colors.purpleAccent, () => onPressed(context)),
       _createIconItem(Icons.favorite, 'Favorite', Colors.orangeAccent, () => onPressed(context)),
