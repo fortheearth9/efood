@@ -52,3 +52,13 @@ class OrderSummary extends StatelessWidget {
     );
   }
 }
+
+void onTableButtonClicked() {
+  runApp(MaterialApp(
+    title: 'Shopping Cart',
+    theme: ThemeData(
+      primarySwatch: Colors.blue,
+    ),
+    home: OrderingPage(),
+  ));
+}

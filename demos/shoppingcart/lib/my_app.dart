@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'ordering_page.dart';
+import 'ordering_page.dart'; // Correct import statement
 
 class MyApp extends StatelessWidget {
   @override
@@ -9,7 +9,15 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: OrderingPage(),
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Shopping Cart'),
+        ),
+        body: Center(
+            onTableButtonClicked(); // Correct function call
+          ),
+        ),
+      ),
     );
   }
 }

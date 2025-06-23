@@ -1,0 +1,33 @@
+import 'package:flutter/material.dart';
+
+class IconsPage extends StatelessWidget {
+  final List<String> icons = [
+    'Favorite Border Rounded',
+    'Favorite Border Sharp',
+    'Home',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      // appBar: AppBar(
+      //   title: Text('Icons Page'),
+      // ),
+      body: GridView.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 4,
+        ),
+        itemCount: icons.length,
+        itemBuilder: (context, index) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.favorite), // Example icon, replace with your icons
+              Text(icons[index]),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
